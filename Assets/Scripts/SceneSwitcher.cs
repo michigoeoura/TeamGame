@@ -11,7 +11,7 @@ public class SceneSwitcher : MonoBehaviour
         ResultScene,
         SampleScene,
         SelectScene,
-        TestScene,
+        TestScene2,
         TitleScene,
         Unknown
     }
