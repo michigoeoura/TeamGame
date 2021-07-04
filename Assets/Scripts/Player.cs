@@ -116,6 +116,9 @@ public class Player : Unit
             {
                 isNowMove = false;
                 isActEnd = true;
+
+
+
             }
         }
 
@@ -128,5 +131,18 @@ public class Player : Unit
 
     public override void WhenEndTurn()
     {
+        List<AbstractEnemy> enemies = unitListner.GetEnemies();
+        foreach (var enemy in enemies)
+        {
+            // 敵リストのうちターン終了時に0.2m以内に居る奴
+            // todo:そんな判定で良いんですか？コライダー使えない？
+            if (Vector3.Distance(transform.position, enemy.transform.position) <= 0.2f)
+            {
+                GameObject eventObject = GameObject.Instantiate(unitListner.GetEventTemplate(MoGameEvent.eGameEvent.RemoveObject));
+                EventRemoveUnit removeEvent = eventObject.GetComponent<EventRemoveUnit>();
+                removeEvent.Initialize(enemy);
+                unitListner.AddEvent(removeEvent);
+            }
+        }
     }
 }

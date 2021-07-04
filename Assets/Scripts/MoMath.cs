@@ -103,4 +103,24 @@ namespace MoMath
 
         }
     }
+
+    class LerpMath
+    {
+        // 2次ベジェ曲線
+        public static Vector3 QuadraticBeziercurve(Vector3 start, Vector3 controlPoint, Vector3 end, float t)
+        {
+            Vector3 ret = new Vector3(0, 0, 0);
+
+            // fromからcontrolをLerpで移動する点
+            Vector3 startToControl = Vector3.Lerp(start, controlPoint, t);
+            // controlからtoをLerpで移動する点
+            Vector3 controlToEnd = Vector3.Lerp(controlPoint, end, t);
+
+            // 最終的に求める点は、上二つの点を結ぶ線上をLerpで移動する点
+            ret = Vector3.Lerp(startToControl, controlToEnd, t);
+
+            return ret;
+        }
+    }
+
 }
