@@ -10,10 +10,12 @@ abstract public class Unit : MonoBehaviour
 
     protected MapNode nowNode;
 
-    [SerializeField]
-    protected static GameSceneManager manager;
+    //[SerializeField]
+    public static UnitListner unitListner;
 
     public bool isActEnd { get; protected set; } = false;
+
+    public bool isAlive { get; protected set; } = true;
 
     // Start is called before the first frame update
     protected void Start()
