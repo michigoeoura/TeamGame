@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneSwitcher : MonoBehaviour
 {
+    // 新しいシーンを追加したらここに増やせばいけるかも......
+    // タイプミスに要注意!!!
     public enum Scene
     {
         GameScene,
