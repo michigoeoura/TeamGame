@@ -55,6 +55,54 @@ public class MapNode : MonoBehaviour
         return true;
     }
 
+    // 引数で渡ってきた方向にノードが接続されていればそれを返す、無ければnull
+    public MapNode GetConnectedNode(MoMath.XZDirection direction)
+    {
+        if (nodesOnDirection[(int)direction])
+        {
+            return nodesOnDirection[(int)direction];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// XZ平面(床面)での方向ベクトル同士の角度を符号付きで返す（度）
+    ///・XZ平面(床面)に射影された from から to への角度を返す。
+    ///・transform.forward を基準とすると、右向き（時計回り）が正、左向き（反時計回り）が負となる。
+    /// </summary>
+    /// <param name="from">基準の方向ベクトル</param>
+    /// <param name="to">対象の方向ベクトル</param>
+    /// <returns>-180 <= t <= 180 [degree]</returns>
+    private static float AngleXZWithSign(Vector3 from, Vector3 to)
+    {
+        Vector3 projFrom = from;
+        Vector3 projTo = to;
+        projFrom.y = projTo.y = 0;  //y軸を無視する（XZ平面に射影する）
+        float angle = Vector3.Angle(projFrom, projTo);
+        float cross = CrossXZ(projFrom, projTo);
+        return (cross != 0) ? angle * -Mathf.Sign(cross) : angle; //2D外積の符号を反転する
+    }
+
+    /// <summary>
+    /// XZ 平面(床面)での2D外積を求める
+    ///・a×b = a1b3 - a3b1
+    ///・2D 的に計算する。y軸を無視したものと考える。
+    ///・外積 = 0 のとき、両ベクトルは平行（0または180度）。
+    ///・外積 > 0 のとき、transform.forward を基準にすると左側。
+    ///・外積 < 0 のとき、transform.forward を基準にすると右側。
+    ///※Y軸での回転とは正負が逆になるので注意。
+    /// </summary>
+    /// <param name="a">基準の方向ベクトル</param>
+    /// <param name="b">対象の方向ベクトル</param>
+    /// <returns>2Dの外積</returns>
+    private static float CrossXZ(Vector3 a, Vector3 b)
+    {
+        return a.x * b.z - a.z * b.x;
+    }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -62,7 +110,9 @@ public class MapNode : MonoBehaviour
 
         foreach (var node in connectedNodes)
         {
+            if (node == null) { continue; }
             //Gizmos.DrawLine(gameObject.transform.position, node.transform.position);
+
 
             // ノード間の接続を表示
             Vector3 startPos = gameObject.transform.position; // 始点
@@ -84,6 +134,7 @@ public class MapNode : MonoBehaviour
 
         foreach (var node in connectedNodes)
         {
+            if (node == null) { continue; }
             //Gizmos.DrawLine(gameObject.transform.position, node.transform.position);
 
             // ノード間の接続を表示
@@ -179,41 +230,5 @@ public class MapNode : MonoBehaviour
         Gizmos.DrawRay(pos + direction, left * arrowHeadLength);
     }
 #endif
-
-
-    /// <summary>
-    /// XZ平面(床面)での方向ベクトル同士の角度を符号付きで返す（度）
-    ///・XZ平面(床面)に射影された from から to への角度を返す。
-    ///・transform.forward を基準とすると、右向き（時計回り）が正、左向き（反時計回り）が負となる。
-    /// </summary>
-    /// <param name="from">基準の方向ベクトル</param>
-    /// <param name="to">対象の方向ベクトル</param>
-    /// <returns>-180 <= t <= 180 [degree]</returns>
-    private static float AngleXZWithSign(Vector3 from, Vector3 to)
-    {
-        Vector3 projFrom = from;
-        Vector3 projTo = to;
-        projFrom.y = projTo.y = 0;  //y軸を無視する（XZ平面に射影する）
-        float angle = Vector3.Angle(projFrom, projTo);
-        float cross = CrossXZ(projFrom, projTo);
-        return (cross != 0) ? angle * -Mathf.Sign(cross) : angle; //2D外積の符号を反転する
-    }
-
-    /// <summary>
-    /// XZ 平面(床面)での2D外積を求める
-    ///・a×b = a1b3 - a3b1
-    ///・2D 的に計算する。y軸を無視したものと考える。
-    ///・外積 = 0 のとき、両ベクトルは平行（0または180度）。
-    ///・外積 > 0 のとき、transform.forward を基準にすると左側。
-    ///・外積 < 0 のとき、transform.forward を基準にすると右側。
-    ///※Y軸での回転とは正負が逆になるので注意。
-    /// </summary>
-    /// <param name="a">基準の方向ベクトル</param>
-    /// <param name="b">対象の方向ベクトル</param>
-    /// <returns>2Dの外積</returns>
-    private static float CrossXZ(Vector3 a, Vector3 b)
-    {
-        return a.x * b.z - a.z * b.x;
-    }
 
 }
