@@ -58,10 +58,11 @@ public class MapNode : MonoBehaviour
     // 引数で渡ってきた方向にノードが接続されていればそれを返す、無ければnull
     public MapNode GetConnectedNode(MoMath.XZDirection direction)
     {
-        if(nodesOnDirection[(int)direction])
+        if (nodesOnDirection[(int)direction])
         {
             return nodesOnDirection[(int)direction];
-        }else
+        }
+        else
         {
             return null;
         }
@@ -109,7 +110,9 @@ public class MapNode : MonoBehaviour
 
         foreach (var node in connectedNodes)
         {
+            if (node == null) { continue; }
             //Gizmos.DrawLine(gameObject.transform.position, node.transform.position);
+
 
             // ノード間の接続を表示
             Vector3 startPos = gameObject.transform.position; // 始点
@@ -131,6 +134,7 @@ public class MapNode : MonoBehaviour
 
         foreach (var node in connectedNodes)
         {
+            if (node == null) { continue; }
             //Gizmos.DrawLine(gameObject.transform.position, node.transform.position);
 
             // ノード間の接続を表示

@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class Player : Unit
 {
-    public Vector3 targetPos;
-    private float speed = 7;
 
-    private bool isNowMove = false;
-
-    private MapNode targetNode;
 
     // Start is called before the first frame update
     new void Start()
@@ -39,7 +34,7 @@ public class Player : Unit
                 {
                     if (CanMove(nowNode, to))
                     {
-                        targetNode = to;
+                        SetMoveTarget(to);
                     }
                 }
             }
@@ -49,43 +44,15 @@ public class Player : Unit
 
     }
 
-    private void Move()
-    {
-        // todo 7/2現在思いつかないけどなんかマトモなのに改善のこと
-        // Lerpで動かす
-        transform.position = Vector3.Slerp(transform.position, targetPos, speed * Time.deltaTime);
-    }
 
     private void DecideMove()
     {
         if (!targetNode) { return; }
 
-        if (targetNode != nowNode)
-        {
-            // 現在ノードから対象ノードに移動可能なら移動開始
-            targetPos = targetNode.transform.position;
-            nowNode = targetNode;
-            isNowMove = true;
-        }
     }
 
-    private bool CanMove(MapNode from, MapNode to)
-    {
-        if (!from.CanMove(to)) { return false; }
 
-        return true;
-    }
 
-    private bool IsMoveEnd()
-    {
-        if (Vector3.Distance(transform.position, nowNode.transform.position) < 0.1f)
-        {
-            // todo このままではキャラが上下軸にめり込むのでキャラの分Y座標は上にする必要がある
-            transform.position = nowNode.transform.position;
-            return true;
-        }
-        return false;
-    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -116,9 +83,6 @@ public class Player : Unit
             {
                 isNowMove = false;
                 isActEnd = true;
-
-
-
             }
         }
 

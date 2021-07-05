@@ -2,31 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnEnemy : AbstractEnemy
+public class SentryEnemy : AbstractEnemy
 {
-    [SerializeField]
-    private float turnSpeed = 7;
-
-    MoMath.XZDirection targetDirection;
-
-
-    // Start is called before the first frame update
-    new void Start()
-    {
-        base.Start();
-
-        targetDirection = nowDirection;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public override void Action()
     {
+
         if (isAttacking)
         {
             Move();
@@ -34,12 +14,9 @@ public class TurnEnemy : AbstractEnemy
         }
         else
         {
-            Rotate();
-            if (IsEndRotate()) { isActEnd = true; }
+
+            isActEnd = true;
         }
-
-
-
     }
 
     public override void WhenEndTurn()
@@ -56,7 +33,7 @@ public class TurnEnemy : AbstractEnemy
 
     public override void WhenStartTurn()
     {
-        MapNode forwardAdjecentNode = nowNode.GetConnectedNode(targetDirection);
+        MapNode forwardAdjecentNode = nowNode.GetConnectedNode(nowDirection);
         if (unitListner.GetPlayer().nowNode == forwardAdjecentNode)
         {
             if (CanMove(nowNode, forwardAdjecentNode))
@@ -67,23 +44,18 @@ public class TurnEnemy : AbstractEnemy
             }
         }
         isAttacking = false;
-        targetDirection = MoMath.DirectionMath.Inverse(targetDirection);
     }
 
-    private void Rotate()
+    // Start is called before the first frame update
+    new void Start()
     {
-        Vector3 targetEuler = MoMath.DirectionMath.EulerFromDirection(targetDirection);
-        Quaternion targetQuaternion = Quaternion.Euler(targetEuler);
-        // Lerp‚Å“®‚©‚·
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, turnSpeed * Time.deltaTime);
+        base.Start();
     }
 
-    private bool IsEndRotate()
+    // Update is called once per frame
+    void Update()
     {
-        float angle = Vector3.Angle(transform.forward, MoMath.DirectionMath.FromDirection(targetDirection));
 
-        if (angle < 1.0f) { return true; }
-        return false;
     }
 
 #if UNITY_EDITOR
@@ -98,5 +70,4 @@ public class TurnEnemy : AbstractEnemy
     }
 
 #endif
-
 }
