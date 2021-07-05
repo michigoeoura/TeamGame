@@ -13,6 +13,8 @@ public interface UnitListner
     public List<AbstractEnemy> GetEnemies();
 
     public GameObject GetEventTemplate(MoGameEvent.eGameEvent name);
+
+    public Player GetPlayer();
 }
 
 // GameEventに対するリスナーとしてのゲームマネージャー
@@ -137,6 +139,10 @@ public class GameSceneManager : MonoBehaviour, UnitListner, EventListner
         return enemyList;
     }
 
+    public Player GetPlayer()
+    {
+        return player;
+    }
 
     // 内部クラスはprivateアクセス可能
     abstract class SceneStateBase
@@ -226,7 +232,7 @@ public class GameSceneManager : MonoBehaviour, UnitListner, EventListner
         bool toPlayerTurn = false;
         public EventProcTurn(GameSceneManager gameSceneManager, bool bePlayerTurn) : base(gameSceneManager)
         {
-            toPlayerTurn = true;
+            toPlayerTurn = bePlayerTurn;
         }
 
         public override void Update()
