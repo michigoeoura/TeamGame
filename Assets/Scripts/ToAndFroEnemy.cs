@@ -79,10 +79,6 @@ public class ToAndFroEnemy : AbstractTurnEnemy
 
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 49abea5a6938d4f7122f1b4ce30c3f2c051b5820
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
