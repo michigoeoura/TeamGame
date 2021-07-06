@@ -78,4 +78,18 @@ public class ToAndFroEnemy : AbstractTurnEnemy
     {
 
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        // ノード間の接続を表示
+        Vector3 startPos = gameObject.transform.position; // 始点
+        Vector3 endPos = startNode.transform.position;               // 終点
+        var connetionLineThicness = 10;                                             // 太さ(Gizmos.DrawLineでは太さを設定できない)
+        UnityEditor.Handles.DrawBezier(startPos, endPos, startPos, endPos, Color.black, null, connetionLineThicness);
+
+    }
+
+#endif
+
 }
