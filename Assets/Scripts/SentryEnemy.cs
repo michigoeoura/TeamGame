@@ -33,17 +33,7 @@ public class SentryEnemy : AbstractEnemy
 
     public override void WhenStartTurn()
     {
-        MapNode forwardAdjecentNode = nowNode.GetConnectedNode(nowDirection);
-        if (unitListner.GetPlayer().nowNode == forwardAdjecentNode)
-        {
-            if (CanMove(nowNode, forwardAdjecentNode))
-            {
-                isAttacking = true;
-                SetMoveTarget(forwardAdjecentNode);
-                return;
-            }
-        }
-        isAttacking = false;
+        TryStartAttack();
     }
 
     // Start is called before the first frame update
