@@ -2,25 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnEnemy : AbstractEnemy
+abstract public class AbstractTurnEnemy : AbstractEnemy
 {
+
+
     [SerializeField]
-    private float turnSpeed = 7;
+    private float turnTime = 1;
 
     Timer turnTimer;
 
-    [SerializeField, ReadOnly]
-    MoMath.XZDirection targetDirection;
 
+    [SerializeField, ReadOnly]
+    protected MoMath.XZDirection targetDirection;
 
     // Start is called before the first frame update
-    new void Start()
+    protected new void Start()
     {
         base.Start();
 
         targetDirection = nowDirection;
 
-        turnTimer = new Timer(turnSpeed);
+        turnTimer = new Timer(turnTime);
 
     }
 
@@ -30,42 +32,7 @@ public class TurnEnemy : AbstractEnemy
 
     }
 
-    public override void Action()
-    {
-        if (isAttacking)
-        {
-            Move();
-            if (IsMoveEnd()) { isActEnd = true; }
-        }
-        else
-        {
-            Rotate();
-            if (IsEndRotate()) { isActEnd = true; }
-        }
-
-
-
-    }
-
-    public override void WhenEndTurn()
-    {
-        Player player = unitListner.GetPlayer();
-        if (Vector3.Distance(transform.position, player.transform.position) <= 0.2f)
-        {
-            GameObject eventObject = GameObject.Instantiate(unitListner.GetEventTemplate(MoGameEvent.eGameEvent.RemoveObject));
-            EventRemoveUnit removeEvent = eventObject.GetComponent<EventRemoveUnit>();
-            removeEvent.Initialize(player);
-            unitListner.AddEvent(removeEvent);
-        }
-    }
-
-    public override void WhenStartTurn()
-    {
-        if (TryStartAttack()) { return; }
-        targetDirection = MoMath.DirectionMath.Inverse(targetDirection);
-    }
-
-    private void Rotate()
+    protected void Rotate()
     {
         turnTimer.TimerUpdate();
         Vector3 nowNodeEuler = MoMath.DirectionMath.EulerFromDirection(nowDirection);
@@ -76,7 +43,7 @@ public class TurnEnemy : AbstractEnemy
         transform.rotation = Quaternion.Slerp(nowNodeQuaternion, targetQuaternion, turnTimer.GetProgressZeroToOne());
     }
 
-    private bool IsEndRotate()
+    protected bool IsEndRotate()
     {
         float angle = Vector3.Angle(transform.forward, MoMath.DirectionMath.FromDirection(targetDirection));
 
@@ -88,6 +55,7 @@ public class TurnEnemy : AbstractEnemy
         }
         return false;
     }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -101,5 +69,4 @@ public class TurnEnemy : AbstractEnemy
     }
 
 #endif
-
 }
