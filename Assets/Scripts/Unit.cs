@@ -17,6 +17,9 @@ abstract public class Unit : MonoBehaviour
     [SerializeField]
     private Timer moveTimer;
 
+    [SerializeField]
+    private AudioSource audioSource;
+
     protected bool isNowMove = false;
 
     protected MapNode targetNode;
@@ -72,6 +75,11 @@ abstract public class Unit : MonoBehaviour
             // todo このままではキャラが上下軸にめり込むのでキャラの分Y座標は上にする必要がある
             transform.position = targetNode.transform.position;
             nowNode = targetNode;
+
+            if(audioSource!=null)
+            {
+                audioSource.Play();
+            }
         }
 
     }
