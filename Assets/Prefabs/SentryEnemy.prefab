@@ -112,7 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startNode: {fileID: 0}
   targetPos: {x: 0, y: 0, z: 0}
-  speed: 7
+  moveTime: 0.3
   nowDirection: 0
 --- !u!1 &8365892663221112243
 GameObject:

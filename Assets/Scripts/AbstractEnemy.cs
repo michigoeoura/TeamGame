@@ -11,7 +11,7 @@ abstract public class AbstractEnemy : Unit
     protected bool isAttacking = false;
 
     // Start is called before the first frame update
-    new void Start()
+    new protected void Start()
     {
         base.Start();
         isAttacking = false;
@@ -21,6 +21,22 @@ abstract public class AbstractEnemy : Unit
 
     }
 
+    protected bool TryStartAttack()
+    {
+        MapNode forwardAdjecentNode = nowNode.GetConnectedNode(nowDirection);
+        if (unitListner.GetPlayer().nowNode == forwardAdjecentNode)
+        {
+            if (CanMove(nowNode, forwardAdjecentNode))
+            {
+                isAttacking = true;
+                SetMoveTarget(forwardAdjecentNode);
+                return true;
+            }
+        }
+        isAttacking = false;
+
+        return false;
+    }
 
 
 }

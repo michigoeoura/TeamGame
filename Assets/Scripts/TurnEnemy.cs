@@ -7,6 +7,9 @@ public class TurnEnemy : AbstractEnemy
     [SerializeField]
     private float turnSpeed = 7;
 
+    Timer turnTimer;
+
+    [SerializeField, ReadOnly]
     MoMath.XZDirection targetDirection;
 
 
@@ -16,6 +19,8 @@ public class TurnEnemy : AbstractEnemy
         base.Start();
 
         targetDirection = nowDirection;
+
+        turnTimer = new Timer(turnSpeed);
 
     }
 
@@ -56,33 +61,31 @@ public class TurnEnemy : AbstractEnemy
 
     public override void WhenStartTurn()
     {
-        MapNode forwardAdjecentNode = nowNode.GetConnectedNode(targetDirection);
-        if (unitListner.GetPlayer().nowNode == forwardAdjecentNode)
-        {
-            if (CanMove(nowNode, forwardAdjecentNode))
-            {
-                isAttacking = true;
-                SetMoveTarget(forwardAdjecentNode);
-                return;
-            }
-        }
-        isAttacking = false;
+        if (TryStartAttack()) { return; }
         targetDirection = MoMath.DirectionMath.Inverse(targetDirection);
     }
 
     private void Rotate()
     {
+        turnTimer.TimerUpdate();
+        Vector3 nowNodeEuler = MoMath.DirectionMath.EulerFromDirection(nowDirection);
+        Quaternion nowNodeQuaternion = Quaternion.Euler(nowNodeEuler);
         Vector3 targetEuler = MoMath.DirectionMath.EulerFromDirection(targetDirection);
         Quaternion targetQuaternion = Quaternion.Euler(targetEuler);
         // Lerp‚Å“®‚©‚·
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, turnSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(nowNodeQuaternion, targetQuaternion, turnTimer.GetProgressZeroToOne());
     }
 
     private bool IsEndRotate()
     {
         float angle = Vector3.Angle(transform.forward, MoMath.DirectionMath.FromDirection(targetDirection));
 
-        if (angle < 1.0f) { return true; }
+        if (angle < 1.0f)
+        {
+            nowDirection = targetDirection;
+            turnTimer.Reset();
+            return true;
+        }
         return false;
     }
 
