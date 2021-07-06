@@ -205,5 +205,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startNode: {fileID: 0}
+  targetPos: {x: 0, y: 0, z: 0}
+  moveTime: 0.3
+  audioSource: {fileID: 0}
   nowDirection: 0
-  turnSpeed: 7
+  turnTime: 0.3
+  targetDirection: 0

@@ -111,3 +111,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startNode: {fileID: 0}
   targetPos: {x: 0, y: 0, z: 0}
+  moveTime: 0.3

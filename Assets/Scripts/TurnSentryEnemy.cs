@@ -2,11 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SentryEnemy : AbstractEnemy
+public class TurnSentryEnemy : AbstractTurnEnemy
 {
-    public override void Action()
+
+
+
+    // Start is called before the first frame update
+    new void Start()
+    {
+        base.Start();
+    }
+
+    // Update is called once per frame
+    void Update()
     {
 
+    }
+
+    public override void Action()
+    {
         if (isAttacking)
         {
             Move();
@@ -14,9 +28,12 @@ public class SentryEnemy : AbstractEnemy
         }
         else
         {
-
-            isActEnd = true;
+            Rotate();
+            if (IsEndRotate()) { isActEnd = true; }
         }
+
+
+
     }
 
     public override void WhenEndTurn()
@@ -33,20 +50,11 @@ public class SentryEnemy : AbstractEnemy
 
     public override void WhenStartTurn()
     {
-        TryStartAttack();
+        if (TryStartAttack()) { return; }
+        targetDirection = MoMath.DirectionMath.Inverse(targetDirection);
     }
 
-    // Start is called before the first frame update
-    new void Start()
-    {
-        base.Start();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -60,4 +68,5 @@ public class SentryEnemy : AbstractEnemy
     }
 
 #endif
+
 }
