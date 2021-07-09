@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnSentryEnemy : AbstractTurnEnemy
+public class TurnSentryEnemy : AbstractEnemy
 {
 
 

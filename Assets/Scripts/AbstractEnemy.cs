@@ -4,11 +4,17 @@ using UnityEngine;
 
 abstract public class AbstractEnemy : Unit
 {
+    protected bool isAttacking = false;
 
     [SerializeField]
     protected MoMath.XZDirection nowDirection;
 
-    protected bool isAttacking = false;
+    [SerializeField]
+    private float turnTime = 1;
+    Timer turnTimer;
+    [SerializeField, ReadOnly]
+    protected MoMath.XZDirection targetDirection;
+
 
     // Start is called before the first frame update
     new protected void Start()
@@ -16,6 +22,9 @@ abstract public class AbstractEnemy : Unit
         base.Start();
         isAttacking = false;
 
+        targetDirection = nowDirection;
+
+        turnTimer = new Timer(turnTime);
 
         transform.rotation = Quaternion.LookRotation(MoMath.DirectionMath.FromDirection(nowDirection), Vector3.up);
 
@@ -39,4 +48,28 @@ abstract public class AbstractEnemy : Unit
     }
 
 
+
+    protected void Rotate()
+    {
+        turnTimer.TimerUpdate();
+        Vector3 nowNodeEuler = MoMath.DirectionMath.EulerFromDirection(nowDirection);
+        Quaternion nowNodeQuaternion = Quaternion.Euler(nowNodeEuler);
+        Vector3 targetEuler = MoMath.DirectionMath.EulerFromDirection(targetDirection);
+        Quaternion targetQuaternion = Quaternion.Euler(targetEuler);
+        // Lerp‚Å“®‚©‚·
+        transform.rotation = Quaternion.Slerp(nowNodeQuaternion, targetQuaternion, turnTimer.GetProgressZeroToOne());
+    }
+
+    protected bool IsEndRotate()
+    {
+        float angle = Vector3.Angle(transform.forward, MoMath.DirectionMath.FromDirection(targetDirection));
+
+        if (angle < 1.0f)
+        {
+            nowDirection = targetDirection;
+            turnTimer.Reset();
+            return true;
+        }
+        return false;
+    }
 }
